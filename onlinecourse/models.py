@@ -103,11 +103,14 @@ class Enrollment(models.Model):
     # Other fields and methods you would like to design
 class Question(models.Model):
     # Foreign key to lesson
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     # question text
+    question_text = models.CharField(max_length=300, default=" ")
     # question grade/mark
+    grade = models.IntegerField(default=0)
 
     # <HINT> A sample model method to calculate if learner get the score of the question
- def is_get_score(self, selected_ids):
+def is_get_score(self, selected_ids):
         all_answers = self.choice_set.filter(is_correct=True).count()
         selected_correct = self.choice_set.filter(is_correct=True, id__in=selected_ids).count()
         if all_answers == selected_correct:
@@ -123,10 +126,13 @@ class Question(models.Model):
     # Indicate if this choice of the question is a correct one or not
     # Other fields and methods you would like to design
 class Choice(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    choice_text = models.CharField(max_length=300, default=" ")
+    is_correct = models.BooleanField(default=False)
     
 
 class Submission(models.Model):
    enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
-    choices = models.ManyToManyField(Choice)
+   choices = models.ManyToManyField(Choice)
 
 #    Other fields and methods you would like to design
